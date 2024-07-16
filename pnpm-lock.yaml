@@ -29,6 +29,9 @@ importers:
       expo-constants:
         specifier: ~16.0.2
         version: 16.0.2(expo@51.0.18(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7)))
+      expo-doctor:
+        specifier: ^1.6.1
+        version: 1.6.1
       expo-font:
         specifier: ~12.0.7
         version: 12.0.7(expo@51.0.18(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7)))
@@ -2506,6 +2509,10 @@ packages:
     resolution: {integrity: sha512-9tNY3OVO0jfiMzl7ngb6IOyR5VFzNoN5OOazUWoeGfmMqVB5kltTemRvKraK9JRbBKIw+SOYLEmF0sEqgFZ6OQ==}
     peerDependencies:
       expo: '*'
+
+  expo-doctor@1.6.1:
+    resolution: {integrity: sha512-n80Bzs3iEnkOSIKrxJTNE2QwTpmWx2aJQpDVymlfK4Ur11ocuirUZy7IfsPbs9PGGXvxE4bIH3SGq3QghRNM4Q==}
+    hasBin: true
 
   expo-file-system@17.0.1:
     resolution: {integrity: sha512-dYpnZJqTGj6HCYJyXAgpFkQWsiCH3HY1ek2cFZVHFoEc5tLz9gmdEgTF6nFHurvmvfmXqxi7a5CXyVm0aFYJBw==}
@@ -8556,6 +8563,8 @@ snapshots:
       expo: 51.0.18(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))
     transitivePeerDependencies:
       - supports-color
+
+  expo-doctor@1.6.1: {}
 
   expo-file-system@17.0.1(expo@51.0.18(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))):
     dependencies:
