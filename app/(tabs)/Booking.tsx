@@ -12,23 +12,29 @@ interface AtmData {
 }
 
 type RootStackParamList = {
-  Booking: { atm: AtmData; amount: string; date: string };
+  Booking: { atm: AtmData; amount: string; date: string; token: string };
 };
 
 type BookingRouteProp = RouteProp<RootStackParamList, "Booking">;
 
 const Booking = () => {
   const [userTrips, setUserTrips] = useState<
-    { atm: AtmData; amount: string; date: string }[]
+    { atm: AtmData; amount: string; date: string; token: string }[]
   >([]);
   const route = useRoute<BookingRouteProp>();
 
   useEffect(() => {
-    if (route.params?.atm && route.params?.amount && route.params?.date) {
+    if (
+      route.params?.atm &&
+      route.params?.amount &&
+      route.params?.date &&
+      route.params?.token
+    ) {
       const newTrip = {
         atm: route.params.atm,
         amount: route.params.amount,
         date: route.params.date,
+        token: route.params.token,
       };
       setUserTrips((prevTrips) => [...prevTrips, newTrip]);
     }
@@ -61,6 +67,7 @@ const Booking = () => {
             <Text>Location: {trip.atm.location}</Text>
             <Text>Amount: {trip.amount}</Text>
             <Text>Date: {trip.date}</Text>
+            <Text>Token: {trip.token}</Text>
             <TouchableOpacity
               style={styles.deleteButton}
               onPress={() => deleteTrip(index)}

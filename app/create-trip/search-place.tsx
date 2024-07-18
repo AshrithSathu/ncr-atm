@@ -29,7 +29,7 @@ const dummyAtmData: AtmData[] = [
 
 type RootStackParamList = {
   SearchPlace: undefined;
-  Booking: { atm: AtmData; amount: string; date: string };
+  Booking: { atm: AtmData; amount: string; date: string; token: string };
 };
 
 type SearchPlaceNavigationProp = NavigationProp<
@@ -98,10 +98,13 @@ const SearchPlace = () => {
   const handlePinSubmit = () => {
     if (pin === "0000") {
       setPinError("");
+      const token = Math.random().toString(36).substring(2, 9); // Generate a random token
+      console.log(`Transaction Token: ${token}`); // Log the token
       navigation.navigate("Booking", {
         atm: selectedAtm!,
         amount: amount,
         date: date.toDateString(),
+        token: token, // Pass the token to the Booking screen
       });
       setModalVisible(false);
       setPinVisible(false);
