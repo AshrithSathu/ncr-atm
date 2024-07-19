@@ -29,7 +29,19 @@ const dummyAtmData: AtmData[] = [
 
 type RootStackParamList = {
   SearchPlace: undefined;
-  Booking: { atm: AtmData; amount: string; date: string; token: string };
+  Booking: {
+    atm: AtmData;
+    amount: string;
+    date: string;
+    token: string;
+    denominations: {
+      fiftyNotes: number;
+      twentyNotes: number;
+      tenNotes: number;
+      fiveNotes: number;
+      oneNotes: number;
+    };
+  };
 };
 
 type SearchPlaceNavigationProp = NavigationProp<
@@ -50,6 +62,12 @@ const SearchPlace = () => {
   const [pin, setPin] = useState<string>("");
   const [pinVisible, setPinVisible] = useState<boolean>(false);
   const [pinError, setPinError] = useState<string>("");
+  const [fiftyNotes, setFiftyNotes] = useState<number>(0);
+  const [twentyNotes, setTwentyNotes] = useState<number>(0);
+  const [tenNotes, setTenNotes] = useState<number>(0);
+  const [fiveNotes, setFiveNotes] = useState<number>(0);
+  const [oneNotes, setOneNotes] = useState<number>(0);
+  const [denominationError, setDenominationError] = useState<string>(""); // New state for denomination error
   const navigation = useNavigation<SearchPlaceNavigationProp>();
 
   const handleSearch = (text: string) => {
@@ -84,33 +102,85 @@ const SearchPlace = () => {
     setDate(currentDate);
   };
 
+  const calculateTotal = () => {
+    return (
+      fiftyNotes * 50 +
+      twentyNotes * 20 +
+      tenNotes * 10 +
+      fiveNotes * 5 +
+      oneNotes * 1
+    );
+  };
+
   const handleSubmit = () => {
+    const total = calculateTotal();
     if (selectedAtm && amount) {
       if (isNaN(Number(amount))) {
         setAmountError("Please enter a valid number for the amount.");
         return;
       }
+      if (total !== Number(amount)) {
+        setDenominationError(
+          "The total of the denominations does not match the amount."
+        );
+        return;
+      }
       setAmountError("");
+      setDenominationError(""); // Clear denomination error if amounts match
       setPinVisible(true);
     }
   };
 
   const handlePinSubmit = () => {
+    const total = calculateTotal();
+    if (total !== Number(amount)) {
+      setDenominationError(
+        "The total of the denominations does not match the amount."
+      );
+      return;
+    }
     if (pin === "0000") {
       setPinError("");
-      const token = Math.random().toString(36).substring(2, 9); // Generate a random token
+      const token = generate11DigitToken(); // Generate an 11-digit token
       console.log(`Transaction Token: ${token}`); // Log the token
       navigation.navigate("Booking", {
         atm: selectedAtm!,
         amount: amount,
         date: date.toDateString(),
-        token: token, // Pass the token to the Booking screen
+        token: token,
+        denominations: {
+          fiftyNotes: fiftyNotes,
+          twentyNotes: twentyNotes,
+          tenNotes: tenNotes,
+          fiveNotes: fiveNotes,
+          oneNotes: oneNotes,
+        },
       });
       setModalVisible(false);
       setPinVisible(false);
       setPin("");
     } else {
       setPinError("Invalid PIN. Please try again.");
+    }
+  };
+
+  const generate11DigitToken = () => {
+    return Math.floor(10000000000 + Math.random() * 90000000000).toString();
+  };
+
+  const incrementNote = (
+    setter: React.Dispatch<React.SetStateAction<number>>,
+    value: number
+  ) => {
+    setter(value + 1);
+  };
+
+  const decrementNote = (
+    setter: React.Dispatch<React.SetStateAction<number>>,
+    value: number
+  ) => {
+    if (value > 0) {
+      setter(value - 1);
     }
   };
 
@@ -184,6 +254,107 @@ const SearchPlace = () => {
                   onChange={handleDateChange}
                 />
               )}
+              <View style={styles.denominationContainer}>
+                <Text style={styles.denominationText}>Denominations:</Text>
+                <View style={styles.denominationRow}>
+                  <Text style={styles.denominationLabel}>$50:</Text>
+                  <TouchableOpacity
+                    onPress={() => decrementNote(setFiftyNotes, fiftyNotes)}
+                  >
+                    <Text style={styles.adjustButton}>-</Text>
+                  </TouchableOpacity>
+                  <TextInput
+                    style={styles.denominationInput}
+                    keyboardType="numeric"
+                    value={fiftyNotes.toString()}
+                    onChangeText={(text) => setFiftyNotes(Number(text))}
+                  />
+                  <TouchableOpacity
+                    onPress={() => incrementNote(setFiftyNotes, fiftyNotes)}
+                  >
+                    <Text style={styles.adjustButton}>+</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.denominationRow}>
+                  <Text style={styles.denominationLabel}>$20:</Text>
+                  <TouchableOpacity
+                    onPress={() => decrementNote(setTwentyNotes, twentyNotes)}
+                  >
+                    <Text style={styles.adjustButton}>-</Text>
+                  </TouchableOpacity>
+                  <TextInput
+                    style={styles.denominationInput}
+                    keyboardType="numeric"
+                    value={twentyNotes.toString()}
+                    onChangeText={(text) => setTwentyNotes(Number(text))}
+                  />
+                  <TouchableOpacity
+                    onPress={() => incrementNote(setTwentyNotes, twentyNotes)}
+                  >
+                    <Text style={styles.adjustButton}>+</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.denominationRow}>
+                  <Text style={styles.denominationLabel}>$10:</Text>
+                  <TouchableOpacity
+                    onPress={() => decrementNote(setTenNotes, tenNotes)}
+                  >
+                    <Text style={styles.adjustButton}>-</Text>
+                  </TouchableOpacity>
+                  <TextInput
+                    style={styles.denominationInput}
+                    keyboardType="numeric"
+                    value={tenNotes.toString()}
+                    onChangeText={(text) => setTenNotes(Number(text))}
+                  />
+                  <TouchableOpacity
+                    onPress={() => incrementNote(setTenNotes, tenNotes)}
+                  >
+                    <Text style={styles.adjustButton}>+</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.denominationRow}>
+                  <Text style={styles.denominationLabel}>$5:</Text>
+                  <TouchableOpacity
+                    onPress={() => decrementNote(setFiveNotes, fiveNotes)}
+                  >
+                    <Text style={styles.adjustButton}>-</Text>
+                  </TouchableOpacity>
+                  <TextInput
+                    style={styles.denominationInput}
+                    keyboardType="numeric"
+                    value={fiveNotes.toString()}
+                    onChangeText={(text) => setFiveNotes(Number(text))}
+                  />
+                  <TouchableOpacity
+                    onPress={() => incrementNote(setFiveNotes, fiveNotes)}
+                  >
+                    <Text style={styles.adjustButton}>+</Text>
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.denominationRow}>
+                  <Text style={styles.denominationLabel}>$1:</Text>
+                  <TouchableOpacity
+                    onPress={() => decrementNote(setOneNotes, oneNotes)}
+                  >
+                    <Text style={styles.adjustButton}>-</Text>
+                  </TouchableOpacity>
+                  <TextInput
+                    style={styles.denominationInput}
+                    keyboardType="numeric"
+                    value={oneNotes.toString()}
+                    onChangeText={(text) => setOneNotes(Number(text))}
+                  />
+                  <TouchableOpacity
+                    onPress={() => incrementNote(setOneNotes, oneNotes)}
+                  >
+                    <Text style={styles.adjustButton}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+              {denominationError ? (
+                <Text style={styles.errorText}>{denominationError}</Text>
+              ) : null}
               {pinVisible && (
                 <>
                   <TextInput
@@ -303,5 +474,36 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
+  },
+  denominationContainer: {
+    marginBottom: 20,
+    alignItems: "center",
+  },
+  denominationText: {
+    fontSize: 18,
+    marginBottom: 10,
+  },
+  denominationRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 10,
+    width: "100%",
+  },
+  denominationLabel: {
+    width: 40,
+  },
+  denominationInput: {
+    height: 40,
+    borderColor: "#ccc",
+    borderWidth: 1,
+    paddingLeft: 8,
+    marginHorizontal: 10,
+    borderRadius: 5,
+    width: 60,
+    textAlign: "center",
+  },
+  adjustButton: {
+    fontSize: 20,
+    marginHorizontal: 10,
   },
 });

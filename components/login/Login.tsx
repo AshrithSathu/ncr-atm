@@ -19,12 +19,7 @@ const Login = () => {
       />
       <View style={styles.container}>
         <Text style={styles.heading}>NCR ATLEOS</Text>
-        <Text style={styles.quote}>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. A magni,
-          pariatur in, saepe dolore porro, aliquam veritatis ex assumenda
-          tempore quas ab consectetur atque? Illum ea exercitationem explicabo
-          maiores soluta?
-        </Text>
+        <Text style={styles.quote}></Text>
         <TouchableOpacity
           style={styles.signInButton}
           onPress={() => {

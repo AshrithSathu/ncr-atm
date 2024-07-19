@@ -11,16 +11,40 @@ interface AtmData {
   location: string;
 }
 
+interface TripData {
+  atm: AtmData;
+  amount: string;
+  date: string;
+  token: string;
+  denominations: {
+    fiftyNotes: number;
+    twentyNotes: number;
+    tenNotes: number;
+    fiveNotes: number;
+    oneNotes: number;
+  };
+}
+
 type RootStackParamList = {
-  Booking: { atm: AtmData; amount: string; date: string; token: string };
+  Booking: {
+    atm: AtmData;
+    amount: string;
+    date: string;
+    token: string;
+    denominations: {
+      fiftyNotes: number;
+      twentyNotes: number;
+      tenNotes: number;
+      fiveNotes: number;
+      oneNotes: number;
+    };
+  };
 };
 
 type BookingRouteProp = RouteProp<RootStackParamList, "Booking">;
 
 const Booking = () => {
-  const [userTrips, setUserTrips] = useState<
-    { atm: AtmData; amount: string; date: string; token: string }[]
-  >([]);
+  const [userTrips, setUserTrips] = useState<TripData[]>([]);
   const route = useRoute<BookingRouteProp>();
 
   useEffect(() => {
@@ -28,13 +52,15 @@ const Booking = () => {
       route.params?.atm &&
       route.params?.amount &&
       route.params?.date &&
-      route.params?.token
+      route.params?.token &&
+      route.params?.denominations
     ) {
-      const newTrip = {
+      const newTrip: TripData = {
         atm: route.params.atm,
         amount: route.params.amount,
         date: route.params.date,
         token: route.params.token,
+        denominations: route.params.denominations,
       };
       setUserTrips((prevTrips) => [...prevTrips, newTrip]);
     }
@@ -67,7 +93,23 @@ const Booking = () => {
             <Text>Location: {trip.atm.location}</Text>
             <Text>Amount: {trip.amount}</Text>
             <Text>Date: {trip.date}</Text>
-            <Text>Token: {trip.token}</Text>
+            <Text>Reservation Id: {trip.token}</Text>
+            <Text>Denominations:</Text>
+            {trip.denominations.fiftyNotes > 0 && (
+              <Text>$50 Notes: {trip.denominations.fiftyNotes}</Text>
+            )}
+            {trip.denominations.twentyNotes > 0 && (
+              <Text>$20 Notes: {trip.denominations.twentyNotes}</Text>
+            )}
+            {trip.denominations.tenNotes > 0 && (
+              <Text>$10 Notes: {trip.denominations.tenNotes}</Text>
+            )}
+            {trip.denominations.fiveNotes > 0 && (
+              <Text>$5 Notes: {trip.denominations.fiveNotes}</Text>
+            )}
+            {trip.denominations.oneNotes > 0 && (
+              <Text>$1 Notes: {trip.denominations.oneNotes}</Text>
+            )}
             <TouchableOpacity
               style={styles.deleteButton}
               onPress={() => deleteTrip(index)}

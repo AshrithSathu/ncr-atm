@@ -65,10 +65,10 @@ const SignUp = () => {
           <Entypo name="back" size={24} color="black" />
         </TouchableOpacity>
       </View>
-      <View>
+      {/* <View>
         <Text style={styles.signUpText}>Create an Account</Text>
         <Text style={styles.subText}>Join us today</Text>
-      </View>
+      </View> */}
       <View style={styles.inputContainer}>
         <Text style={styles.heading}>Username</Text>
         <TextInput

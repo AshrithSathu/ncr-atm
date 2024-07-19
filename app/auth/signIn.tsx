@@ -50,11 +50,11 @@ const SignIn = () => {
           <Entypo name="back" size={24} color="black" />
         </TouchableOpacity>
       </View>
-      <View>
+      {/* <View>
         <Text style={styles.signInText}>Let's Sign You In</Text>
         <Text style={styles.subText}>Welcome Back</Text>
         <Text style={styles.subText}>You've been missed</Text>
-      </View>
+      </View> */}
       <View style={styles.inputContainer}>
         <Text style={styles.heading}>Email</Text>
         <TextInput
